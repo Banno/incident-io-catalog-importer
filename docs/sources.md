@@ -139,6 +139,12 @@ This looks like:
     // as-is instead of signed into JWTs. If this is you, explicitly opt-out of
     // signing like so:
     sign_jwt: false,
+
+    // Additional Headers, with credential env substitution, can be provided
+    // Example of an additional `Proxy-Authorization` header
+    // additional_headers: {
+    //   "Proxy-Authorization": "Bearer $(PROXY_AUTHORIZATION)"
+    // }
   },
 }
 ```

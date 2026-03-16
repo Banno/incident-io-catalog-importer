@@ -18,13 +18,16 @@ import (
 	"github.com/pkg/errors"
 )
 
+type CredentialHeaderMap map[string]Credential
+
 type SourceBackstage struct {
-	Endpoint Credential `json:"endpoint"` // https://backstage.company.io/api/catalog/entities/by-query
-	Token    Credential `json:"token"`
-	SignJWT  *bool      `json:"sign_jwt"`
-	Header   string     `json:"header"`
-	PageSize int        `json:"page_size"`
-	Filter   string     `json:"filter"`
+	Endpoint          Credential          `json:"endpoint"` // https://backstage.company.io/api/catalog/entities/by-query
+	Token             Credential          `json:"token"`
+	SignJWT           *bool               `json:"sign_jwt"`
+	Header            string              `json:"header"`
+	AdditionalHeaders CredentialHeaderMap `json:"additional_headers"`
+	PageSize          int                 `json:"page_size"`
+	Filter            string              `json:"filter"`
 }
 
 func (s SourceBackstage) Validate() error {
@@ -103,6 +106,11 @@ func (s SourceBackstage) fetchEntries(ctx context.Context, client *http.Client, 
 			}
 
 			req.Header.Add(header, fmt.Sprintf("Bearer %s", token))
+		}
+
+		//AdditionalHeaders
+		for header, value := range s.AdditionalHeaders {
+			req.Header.Add(header, string(value))
 		}
 
 		resp, err := client.Do(req)
