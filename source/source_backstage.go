@@ -188,6 +188,11 @@ func (s SourceBackstage) fetchEntriesByQuery(ctx context.Context, client *http.C
 			req.Header.Add(header, fmt.Sprintf("Bearer %s", token))
 		}
 
+		//AdditionalHeaders
+		for header, value := range s.AdditionalHeaders {
+			req.Header.Add(header, string(value))
+		}
+
 		resp, err := client.Do(req)
 		if err == nil && resp.StatusCode != http.StatusOK {
 			err = fmt.Errorf("received error from Backstage: %s", resp.Status)
